@@ -10,7 +10,7 @@ use Doctrine\ORM\Mapping as ORM;
 class Task
 {
     public function __construct(
-        int $id,
+        ?int $id,
         string $uuid,
         int $type,
         string $title,

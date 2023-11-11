@@ -1,5 +1,7 @@
 <?php
 
+date_default_timezone_set('America/Sao_Paulo');
+
 use App\Kernel;
 
 require_once dirname(__DIR__).'/vendor/autoload_runtime.php';

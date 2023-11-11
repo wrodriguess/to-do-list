@@ -17,14 +17,13 @@ class PostTaskController extends AbstractController
     {
     }
 
-    #[Route('/task', name: 'create_talk', methods: ['POST'])]
+    #[Route('/tasks', name: 'create_task', methods: ['POST'])]
     public function handle(Request $request): JsonResponse
     {
         try {
             $data = json_decode($request->getContent(), true);
 
-            v::key('id', v::intType()->notEmpty())
-                ->key('type', v::intType()->notEmpty())
+            v::key('type', v::intType()->notEmpty())
                 ->key('title', v::stringType()->notEmpty())
                 ->key('description', v::stringType())
                 ->key('dueDate', v::stringType()->notEmpty())

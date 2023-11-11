@@ -7,6 +7,7 @@ use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 use Ramsey\Uuid\Uuid;
 use Ramsey\Uuid\UuidInterface;
+use DateTime;
 
 /**
  * @extends ServiceEntityRepository<Task>
@@ -33,6 +34,23 @@ class TaskRepository extends ServiceEntityRepository
         $em = $this->getEntityManager();
         $em->persist($task);
         $em->flush();
+    }
+
+    public function existsScheduledTaskAt(DateTime $date): bool
+    {
+        $em = $this->getEntityManager();
+
+        $exists = $em->createQueryBuilder('t')
+            ->select('t')
+            ->from(Task::class, 't')
+            ->where('t.dueDate = :date')
+            ->andWhere('t.hour = :hour')
+            ->setParameter('date', $date->format('Y-m-d'))
+            ->setParameter('hour', $date->format('H:i'))
+            ->getQuery()
+            ->getOneOrNullResult();
+
+        return $exists !== null;
     }
 
 //    /**

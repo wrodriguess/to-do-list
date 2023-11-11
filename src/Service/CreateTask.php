@@ -18,11 +18,13 @@ class CreateTask
     {
         $uuid = $this->taskRepository->getNextUuid();
 
-        $taskDate = new DateTime($data['dueDate']);
-        $this->ensureValidDueDate($taskDate);
+        $date = new DateTime($data['dueDate'] . ' ' . $data['hour']);
+
+        $this->ensureValidDueDate($date);
+        $this->ensureNoDatetimeConflict($date);
 
         $task = new Task(
-            $data['id'],
+            null,
             $uuid,
             $data['type'],
             $data['title'],
@@ -46,6 +48,15 @@ class CreateTask
 
         if($isInvalidDate){
             throw new Exception("Não permitida a criação de tarefa com data e hora menor do que atual.", 400);
+        }
+    }
+
+    private function ensureNoDatetimeConflict(DateTime $date): void
+    {
+        $isDatetimeConflict = $this->taskRepository->existsScheduledTaskAt($date);
+
+        if($isDatetimeConflict){
+            throw new Exception("Já existe uma tarefa no mesmo dia e horário.", 400);
         }
     }
 }
