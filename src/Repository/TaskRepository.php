@@ -40,7 +40,7 @@ class TaskRepository extends ServiceEntityRepository
     {
         $em = $this->getEntityManager();
 
-        $exists = $em->createQueryBuilder('t')
+        $exists = $em->createQueryBuilder()
             ->select('t')
             ->from(Task::class, 't')
             ->where('t.dueDate = :date')
@@ -60,6 +60,21 @@ class TaskRepository extends ServiceEntityRepository
         $taskRepository = $em->getRepository(Task::class);
 
         return $taskRepository->findAll();
+    }
+
+    public function getById(string $id): array
+    {
+        $em = $this->getEntityManager();
+
+        $task = $em->createQueryBuilder()
+            ->select('t')
+            ->from(Task::class, 't')
+            ->where('t.uuid = :uuid')
+            ->setParameter('uuid', $id)
+            ->getQuery()
+            ->getOneOrNullResult();
+
+        return $task ? $task->toArray() : [];
     }
 
 //    /**
