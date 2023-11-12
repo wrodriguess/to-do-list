@@ -53,6 +53,15 @@ class TaskRepository extends ServiceEntityRepository
         return $exists !== null;
     }
 
+    public function getAll(): array
+    {
+        $em = $this->getEntityManager();
+
+        $taskRepository = $em->getRepository(Task::class);
+
+        return $taskRepository->findAll();
+    }
+
 //    /**
 //     * @return Task[] Returns an array of Task objects
 //     */
