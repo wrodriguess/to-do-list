@@ -9,6 +9,7 @@ use Ramsey\Uuid\Uuid;
 use Ramsey\Uuid\UuidInterface;
 use DateTime;
 use Exception;
+use DateTimeImmutable;
 
 /**
  * @extends ServiceEntityRepository<Task>
@@ -96,6 +97,31 @@ class TaskRepository extends ServiceEntityRepository
 
         $em->remove($task);
         $em->flush();
+    }
+
+    public function doneTask(string $id, bool $done): array
+    {
+        $em = $this->getEntityManager();
+
+        $task = $em->createQueryBuilder()
+            ->select('t')
+            ->from(Task::class, 't')
+            ->where('t.uuid = :uuid')
+            ->setParameter('uuid', $id)
+            ->getQuery()
+            ->getOneOrNullResult();
+
+        if (!$task) {
+            throw new Exception("Não existe task com id $id", 404);
+        }
+
+        $task->setDone($done);
+        $task->setUpdatedAt(new DateTimeImmutable());
+
+        $em->persist($task);
+        $em->flush();
+
+        return $task->toArray();
     }
 
 //    /**
