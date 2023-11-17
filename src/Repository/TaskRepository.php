@@ -8,6 +8,7 @@ use Doctrine\Persistence\ManagerRegistry;
 use Ramsey\Uuid\Uuid;
 use Ramsey\Uuid\UuidInterface;
 use DateTime;
+use Exception;
 
 /**
  * @extends ServiceEntityRepository<Task>
@@ -75,6 +76,26 @@ class TaskRepository extends ServiceEntityRepository
             ->getOneOrNullResult();
 
         return $task ? $task->toArray() : [];
+    }
+
+    public function deleteById(string $id): void
+    {
+        $em = $this->getEntityManager();
+
+        $task = $em->createQueryBuilder()
+            ->select('t')
+            ->from(Task::class, 't')
+            ->where('t.uuid = :uuid')
+            ->setParameter('uuid', $id)
+            ->getQuery()
+            ->getOneOrNullResult();
+
+        if (!$task) {
+            throw new Exception("Não existe task com id $id", 404);
+        }
+
+        $em->remove($task);
+        $em->flush();
     }
 
 //    /**
