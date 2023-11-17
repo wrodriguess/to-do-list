@@ -214,7 +214,9 @@ class Task
             'dueDate' => $this->dueDate,
             'hour' => $this->hour,
             'done' => $this->done,
-            'createdAt' => $this->createdAt
+            'createdAt' => $this->createdAt,
+            'updatedAt' => $this->updatedAt,
+            'deletedAt' => $this->deletedAt
         ];
     }
 }
